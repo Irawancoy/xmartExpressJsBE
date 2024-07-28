@@ -1,34 +1,42 @@
+// Menggunakan pustaka dotenv untuk memuat variabel lingkungan dari file .env
 require('dotenv').config();
+
+// Mengimpor mongoose untuk koneksi ke MongoDB
 const mongoose = require('mongoose');
+
+// Mengimpor pg-promise untuk koneksi ke PostgreSQL
 const pgp = require('pg-promise')();
 
-// Connect to MongoDB
+// Fungsi untuk menghubungkan ke MongoDB
 const connectMongoDB = async () => {
-      try {
-         await mongoose.connect(process.env.MONGODB_URL, {
-         })
-         console.log('MongoDB connected');
-      } catch (error) {
-         console.error(error);
-      }
+   try {
+      // Mencoba menghubungkan ke MongoDB dengan URL yang diambil dari variabel lingkungan
+      await mongoose.connect(process.env.MONGODB_URL, {});
+      console.log('MongoDB connected');
+   } catch (error) {
+      // Menangkap dan mencetak kesalahan jika koneksi gagal
+      console.error(error);
+   }
 }
 
-   
-// Connect to PostgreSQL
+// Koneksi ke PostgreSQL menggunakan konfigurasi dari variabel lingkungan
 const dbPostgres = pgp({
-   user: process.env.PG_USER,
-   password: process.env.PG_PASSWORD,
-   host: process.env.PG_HOST,
-   port: process.env.PG_PORT,
-   database: process.env.PG_DATABASE
-})
+   user: process.env.PG_USER, // Nama pengguna PostgreSQL
+   password: process.env.PG_PASSWORD, // Kata sandi PostgreSQL
+   host: process.env.PG_HOST, // Host PostgreSQL
+   port: process.env.PG_PORT, // Port PostgreSQL
+   database: process.env.PG_DATABASE // Nama database PostgreSQL
+});
 
+// Mencoba menghubungkan ke PostgreSQL
 dbPostgres.connect()
    .then(() => {
-      console.log('PostgreSQL connected')
+      console.log('PostgreSQL connected');
    })
    .catch((error) => {
-      console.error(error)
-   })
+      // Menangkap dan mencetak kesalahan jika koneksi gagal
+      console.error(error);
+   });
 
-module.exports = { connectMongoDB, dbPostgres }
+// Mengekspor fungsi connectMongoDB dan objek dbPostgres
+module.exports = { connectMongoDB, dbPostgres };
